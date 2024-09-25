@@ -44,7 +44,7 @@ async def validation_exception_handler(
             success=False,
             msg=HTTPMessages.VALIDATION_ERROR,
             data=[],
-        ).model_dump(),
+        )
     )
 
 
@@ -70,7 +70,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
             success=False,
             msg=message,
             data=[],
-        ).model_dump(),
+        )
     )
 
 
@@ -96,7 +96,7 @@ async def integrity_error_handler(
             success=False,
             msg=HTTPMessages.DATA_INTEGRITY_ERROR,
             data=[],
-        ).model_dump(),
+        )
     )
 
 
@@ -129,7 +129,7 @@ async def no_result_found_handler(request: Request, exc: NoResultFound) -> JSONR
             success=False,
             msg=message,
             data=[],
-        ).model_dump(),
+        )
     )
 
 
@@ -153,7 +153,7 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
             success=False,
             msg=HTTPMessages.INTERNAL_SERVER_ERROR,
             data=[],
-        ).model_dump(),
+        )
     )
 
 
