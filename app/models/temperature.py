@@ -1,7 +1,7 @@
 from app.database import Base
 
 from sqlalchemy import Column, Integer, Float, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class TemperatureLogs(Base):
@@ -21,4 +21,4 @@ class TemperatureLogs(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     temperature = Column(Float, nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(datetime.timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(tz=timezone.utc))
