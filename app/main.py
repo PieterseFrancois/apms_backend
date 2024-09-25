@@ -62,7 +62,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
     """
 
-    message : str= exc.detail.msg.value
+    message: str = exc.detail.msg.value
 
     return JSONResponse(
         status_code=exc.status_code,
@@ -158,6 +158,7 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 app.include_router(oven.router)
+
 
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:

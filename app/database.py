@@ -16,6 +16,7 @@ Base = mapper_registry.generate_base()
 # Create a configured "Session" class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def initialise_database() -> None:
     """
     Initializes the database by creating tables.
