@@ -9,6 +9,8 @@ class HTTPMessages(Enum):
     VALIDATION_ERROR = "Validation error."
     DATA_INTEGRITY_ERROR = "Data integrity error."
     INTERNAL_SERVER_ERROR = "Internal server error."
+    TEMPERATURE_LOG_CREATED = "Temperature log created successfully."
+    TEMPERATURE_LOGS_RETRIEVED = "Temperature logs retrieved successfully."
 
-    def format(self, **kwargs):
-        return HTTPMessages(self.value.format(**kwargs))
+    def __str__(self) -> str:
+        return self.value
