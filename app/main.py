@@ -9,7 +9,6 @@ from mangum import Mangum
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from app.database import initialise_database
 from app.routers import oven
-from app.schemas import Response
 from app.utils.http_messages import HTTPMessages
 
 app = FastAPI()
@@ -40,11 +39,11 @@ async def validation_exception_handler(
 
     return JSONResponse(
         status_code=422,
-        content=Response(
+        content=dict(
             success=False,
             msg=HTTPMessages.VALIDATION_ERROR,
             data=[],
-        )
+        ),
     )
 
 
@@ -66,11 +65,11 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
     return JSONResponse(
         status_code=exc.status_code,
-        content=Response(
+        content=dict(
             success=False,
             msg=message,
             data=[],
-        )
+        ),
     )
 
 
@@ -92,11 +91,11 @@ async def integrity_error_handler(
 
     return JSONResponse(
         status_code=400,
-        content=Response(
+        content=dict(
             success=False,
             msg=HTTPMessages.DATA_INTEGRITY_ERROR,
             data=[],
-        )
+        ),
     )
 
 
@@ -125,11 +124,11 @@ async def no_result_found_handler(request: Request, exc: NoResultFound) -> JSONR
 
     return JSONResponse(
         status_code=404,
-        content=Response(
+        content=dict(
             success=False,
             msg=message,
             data=[],
-        )
+        ),
     )
 
 
@@ -149,11 +148,12 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
     return JSONResponse(
         status_code=500,
-        content=Response(
+        content=dict(
             success=False,
-            msg=HTTPMessages.INTERNAL_SERVER_ERROR,
+            msg=f"{exc}",
+            # msg=HTTPMessages.INTERNAL_SERVER_ERROR,
             data=[],
-        )
+        ),
     )
 
 
