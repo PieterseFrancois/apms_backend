@@ -2,9 +2,7 @@ from typing import Union
 from pydantic import BaseModel
 from app.utils.http_messages import HTTPMessages
 
-from app.schemas import (
-    TemperatureLogBase,
-)
+from app.schemas.temperature import TemperatureLogBase
 
 
 class Response(BaseModel):
@@ -22,4 +20,4 @@ class Response(BaseModel):
 
     success: bool
     msg: HTTPMessages
-    data: Union[list[TemperatureLogBase],]
+    data: Union[list[TemperatureLogBase], None]

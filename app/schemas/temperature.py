@@ -9,8 +9,11 @@ class TemperatureLogBase(BaseModel):
 
     Attributes:
         temperature (float): The temperature value.
-        time (datetime): The timestamp when the log was created.
+        created_at (datetime): The timestamp when the log was created.
     """
 
     temperature: float
-    time: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
