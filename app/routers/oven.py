@@ -14,6 +14,9 @@ from app.crud.oven import (
     get_temperature_logs,
 )
 
+from datetime import datetime, timezone
+import os
+
 router = APIRouter()
 
 
@@ -68,3 +71,41 @@ def get_temperature_logs_route(
         msg=HTTPMessages.TEMPERATURE_LOGS_RETRIEVED,
         data=temperature_logs,
     )
+
+
+@router.get("/oven/start", response_model=Response, tags=["Oven"])
+def start_oven() -> Response:
+    """
+    Starts the oven.
+
+    Returns:
+    - Response: The response containing the oven status.
+    """
+
+    # Publish a message to the oven's MQTT topic to start the oven.
+    # This is a placeholder for the actual implementation.
+
+    # Temporarily create a text file logging the time and command.
+    current_time = datetime.now(tz=timezone.utc)
+    print(f"Oven started at {current_time}.")
+
+    return Response(success=True, msg=HTTPMessages.OVEN_STARTED, data=[])
+
+
+@router.get("/oven/stop", response_model=Response, tags=["Oven"])
+def stop_oven() -> Response:
+    """
+    Stops the oven.
+
+    Returns:
+    - Response: The response containing the oven status.
+    """
+
+    # Publish a message to the oven's MQTT topic to stop the oven.
+    # This is a placeholder for the actual implementation.
+
+    # Temporarily create a text file logging the time and command.
+    current_time = datetime.now(tz=timezone.utc)
+    print(f"Oven stopped at {current_time}.")
+
+    return Response(success=True, msg=HTTPMessages.OVEN_STOPPED, data=[])
