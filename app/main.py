@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.exceptions import RequestValidationError, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.requests import Request
@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from app.database import initialise_database
 from app.routers import oven
 from app.utils.http_messages import HTTPMessages
+from app.websocket import manager as WebSocketManager
 
 app = FastAPI()
 handler = Mangum(app)
@@ -19,6 +20,25 @@ origins: list[str] = [
     "http://localhost:5173",
     "http://localhost:4200",
 ]
+
+
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str) -> None:
+    """
+    WebSocket endpoint for the application.
+
+    Args:
+        websocket (WebSocket): The WebSocket connection.
+        client_id (str): The client identifier.
+
+    """
+
+    await WebSocketManager.connect(websocket, client_id)
+    try:
+        while True:
+            await websocket.receive_text()
+    except Exception:
+        WebSocketManager.disconnect(client_id)
 
 
 @app.exception_handler(RequestValidationError)
@@ -158,7 +178,6 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 app.include_router(oven.router)
-
 
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
