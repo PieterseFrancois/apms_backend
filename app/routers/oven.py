@@ -17,11 +17,14 @@ from app.crud.oven import (
 from datetime import datetime, timezone
 import os
 
+from app.websocket import manager as WebSocketManager
+import json
+
 router = APIRouter()
 
 
 @router.post("/oven/log/temperature", response_model=Response, tags=["Oven"])
-def create_temperature_log_route(
+async def create_temperature_log_route(
     temperature: float,
     db: Session = Depends(get_db),
 ) -> Response:
@@ -42,6 +45,9 @@ def create_temperature_log_route(
         temperature=result.temperature,
         created_at=result.created_at,
     )
+
+    # Broadcast the temperature log to all connected clients.
+    await WebSocketManager.broadcast(temperature_log.dict())
 
     return Response(
         success=True,
