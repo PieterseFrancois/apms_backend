@@ -48,7 +48,9 @@ async def create_temperature_log_route(
     )
 
     # Broadcast the temperature log to all connected clients.
-    await WebSocketManager.broadcast(temperature_log.dict(), MessageIdentifiers.CurrentTemp)
+    await WebSocketManager.broadcast(
+        temperature_log.dict(), MessageIdentifiers.CurrentTemp
+    )
 
     return Response(
         success=True,
