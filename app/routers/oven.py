@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.utils.http_messages import HTTPMessages
+from app.utils.message_identifiers import MessageIdentifiers
 
 from app.schemas import (
     Response,
@@ -47,7 +48,7 @@ async def create_temperature_log_route(
     )
 
     # Broadcast the temperature log to all connected clients.
-    await WebSocketManager.broadcast(temperature_log.dict())
+    await WebSocketManager.broadcast(temperature_log.dict(), MessageIdentifiers.CurrentTemp)
 
     return Response(
         success=True,
