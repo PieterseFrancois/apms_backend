@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app.websocket import manager as WebSocketManager
 from app.dependencies import get_db
 from app.utils.http_messages import HTTPMessages
 from app.utils.message_identifiers import MessageIdentifiers
@@ -16,10 +17,6 @@ from app.crud.oven import (
 )
 
 from datetime import datetime, timezone
-import os
-
-from app.websocket import manager as WebSocketManager
-import json
 
 router = APIRouter()
 
