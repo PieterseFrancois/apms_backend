@@ -30,4 +30,4 @@ class PressLog(Base):
         Enum(PressLogDescription, name="press_log_description"), nullable=False
     )
     created_at = Column(DateTime, default=lambda: datetime.now(tz=timezone.utc))
-    oven_batch = relationship("PressBatch", back_populates="press_logs")
+    press_batch = relationship("PressBatch", back_populates="press_logs")
