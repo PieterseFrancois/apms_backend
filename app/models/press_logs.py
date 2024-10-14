@@ -24,7 +24,7 @@ class PressLog(Base):
     __tablename__ = "press_logs"
 
     id = Column(Integer, primary_key=True)
-    batch_id = Column(Integer, ForeignKey("oven_batches.id"))
+    batch_id = Column(Integer, ForeignKey("press_batches.id"))
     type = Column(Enum(LogType, name="log_type"), nullable=False)
     description = Column(
         Enum(PressLogDescription, name="press_log_description"), nullable=False
