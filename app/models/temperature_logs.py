@@ -1,10 +1,11 @@
 from app.database import Base
 
-from sqlalchemy import Column, Integer, Float, DateTime
+from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 
 
-class TemperatureLogs(Base):
+class TemperatureLog(Base):
     """
     Represents the temperature logs table.
 
@@ -22,3 +23,8 @@ class TemperatureLogs(Base):
     id = Column(Integer, primary_key=True, index=True)
     temperature = Column(Float, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(tz=timezone.utc))
+    machine_id = Column(Integer, ForeignKey("machines.id"))
+    batch_id = Column(Integer, ForeignKey("oven_batches.id"))
+
+    machine = relationship("Machine", back_populates="temperature_logs")
+    oven_batch = relationship("OvenBatch", back_populates="temperature_logs")
