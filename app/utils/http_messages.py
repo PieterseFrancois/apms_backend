@@ -14,5 +14,12 @@ class HTTPMessages(Enum):
     OVEN_STARTED = "Oven started successfully."
     OVEN_STOPPED = "Oven stopped successfully."
 
+    # Machines
+    MACHINE_CREATED = "Machine created successfully."
+    MACHINE_RETRIEVED = "Machine retrieved successfully."
+    MACHINES_RETRIEVED = "Machines retrieved successfully."
+    MACHINE_UPDATED = "Machine updated successfully."
+    MACHINE_DELETED = "Machine deleted successfully."
+
     def __str__(self) -> str:
         return self.value
