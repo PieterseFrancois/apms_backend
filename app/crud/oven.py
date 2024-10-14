@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.models import TemperatureLogs as TemperatureLogORM
+from app.models import TemperatureLog as TemperatureLogORM
 
 from app.schemas import (
     TemperatureLogBase,
