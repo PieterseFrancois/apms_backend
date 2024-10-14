@@ -8,7 +8,7 @@ from fastapi.responses import RedirectResponse
 from mangum import Mangum
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from app.database import initialise_database
-from app.routers import oven
+from app.routers import oven, machines
 from app.utils.http_messages import HTTPMessages
 from app.websocket import manager as WebSocketManager
 
@@ -178,6 +178,7 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 app.include_router(oven.router)
+app.include_router(machines.router)
 
 
 @app.get("/", include_in_schema=False)
