@@ -12,14 +12,18 @@ from app.schemas import (
     OvenBatchCreate,
     OvenBatch,
     TemperatureLogBase,
+    TemperatureLogCreate,
+    TemperatureLog,
 )
 
 from app.crud.oven import (
     create_oven_batch,
     get_latest_oven_batch_for_machine,
+    get_oven_batches_for_machine,
     stop_active_oven_batch,
     create_temperature_log,
-    get_temperature_logs,
+    get_temperature_logs_for_batch,
+    get_temperature_logs_for_machine,
 )
 
 from datetime import datetime, timezone
@@ -57,7 +61,7 @@ async def start_oven(
         print("MQTT message sent to start oven.")
         # Publish a message to the oven's MQTT topic to start the oven.
         # This is a placeholder for the actual implementation.
-    except Exception as e:
+    except Exception:
         # Create log entry
         # Placeholder for the actual implementation.
 
@@ -70,7 +74,7 @@ async def start_oven(
         await WebSocketManager.send_personal_message(
             "", machine_id, MessageIdentifiers.BakeBatch
         )
-    except Exception as e:
+    except Exception:
         # Create log entry
         # Placeholder for the actual implementation.
 
@@ -105,7 +109,7 @@ async def stop_oven(
         print("MQTT message sent to stop oven.")
         # Publish a message to the oven's MQTT topic to stop the oven.
         # This is a placeholder for the actual implementation.
-    except Exception as e:
+    except Exception:
         # Create log entry
         # Placeholder for the actual implementation.
 
@@ -119,7 +123,7 @@ async def stop_oven(
         await WebSocketManager.send_personal_message(
             "", machine_id, MessageIdentifiers.StopBake
         )
-    except Exception as e:
+    except Exception:
         # Create log entry
         # Placeholder for the actual implementation.
 
@@ -149,39 +153,88 @@ def get_oven_status_route(
         Response: The response containing the oven status.
     """
 
-    oven_batch: OvenBatch = get_latest_oven_batch_for_machine(db, machine_id)
+    oven_batch: OvenBatch | None = get_latest_oven_batch_for_machine(db, machine_id)
 
     return Response(
         success=True, msg=HTTPMessages.OVEN_STATUS_RETRIEVED, data=[oven_batch]
     )
 
 
-@router.post("/oven/log/temperature", response_model=Response, tags=["Oven"])
+@router.get("/oven/batches/{machine_id}", response_model=Response, tags=["Oven"])
+def get_oven_batches_route(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Retrieves the oven batches for a machine.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the oven batches.
+    """
+
+    oven_batches: list[OvenBatch] | None = get_oven_batches_for_machine(db, machine_id)
+
+    return Response(
+        success=True, msg=HTTPMessages.OVEN_STATUS_RETRIEVED, data=oven_batches
+    )
+
+
+@router.post(
+    "/oven/log/temperature/{machine_id}",
+    response_model=Response,
+    tags=["Oven - Temperature"],
+)
 async def create_temperature_log_route(
+    machine_id: int,
     temperature: float,
     db: Session = Depends(get_db),
 ) -> Response:
     """
     Creates a temperature log for the oven.
 
-    Parameters:
-    - temperature (float): The temperature value.
-    - db (Session): The database session.
+    Args:
+        machine_id (int): The machine identifier.
+        temperature (float): The temperature value.
+        db (Session): The database session.
 
     Returns:
-    - Response: The response containing the log details.
+        Response: The response containing the log details.
     """
 
-    result = create_temperature_log(db, temperature)
+    # Get the machines latest batch
+    latest_batch: OvenBatch = get_latest_oven_batch_for_machine(db, machine_id)
 
-    temperature_log = TemperatureLogBase(
-        temperature=result.temperature,
-        created_at=result.created_at,
+    # Check if a batch is active
+    if latest_batch.state != BatchState.ACTIVE:
+        batch_id = None
+    else:
+        batch_id = latest_batch.id
+
+    # Create new temperature log entry
+    new_temperature_log = TemperatureLogCreate(
+        temperature=temperature,
+        machine_id=machine_id,
+        batch_id=batch_id,
     )
 
-    # Broadcast the temperature log to all connected clients.
-    await WebSocketManager.broadcast(
-        temperature_log.dict(), MessageIdentifiers.CurrentTemp
+    temperature_log: TemperatureLogBase = create_temperature_log(
+        db, new_temperature_log
+    )
+
+    temperature_log = TemperatureLogBase(
+        temperature=temperature_log.temperature,
+        created_at=temperature_log.created_at,
+        machine_id=temperature_log.machine_id,
+        batch_id=temperature_log.batch_id,
+    )
+
+    # Broadcast the temperature log to all connected clients of the machine id
+    await WebSocketManager.send_personal_message(
+        temperature_log.dict(), machine_id, MessageIdentifiers.CurrentTemp
     )
 
     return Response(
@@ -191,24 +244,59 @@ async def create_temperature_log_route(
     )
 
 
-@router.get("/oven/logs/temperature", response_model=Response, tags=["Oven"])
-def get_temperature_logs_route(
+@router.get(
+    "/oven/logs/temperature/{machine_id}",
+    response_model=Response,
+    tags=["Oven - Temperature"],
+)
+def get_temperature_logs_for_machine_route(
+    machine_id: int,
     db: Session = Depends(get_db),
 ) -> Response:
     """
-    Retrieves all the temperature logs.
+    Retrieves the temperature logs for the oven based on the machine identifier.
 
-    Parameters:
-    - db (Session): The database session.
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
 
     Returns:
-    - Response: The response containing the list of temperature logs.
+        Response: The response containing the temperature logs.
     """
 
-    temperature_logs: list[TemperatureLogBase] = get_temperature_logs(db)
+    temperature_logs: list[TemperatureLog] = get_temperature_logs_for_machine(
+        db, machine_id
+    )
 
     return Response(
-        success=True,
-        msg=HTTPMessages.TEMPERATURE_LOGS_RETRIEVED,
-        data=temperature_logs,
+        success=True, msg=HTTPMessages.TEMPERATURE_LOGS_RETRIEVED, data=temperature_logs
+    )
+
+
+@router.get(
+    "/oven/logs/temperature/batch/{batch_id}",
+    response_model=Response,
+    tags=["Oven - Temperature"],
+)
+def get_temperature_logs_for_batch_route(
+    batch_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Retrieves the temperature logs for the oven based on the batch identifier.
+
+    Args:
+        batch_id (int): The batch identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the temperature logs.
+    """
+
+    temperature_logs: list[TemperatureLog] = get_temperature_logs_for_batch(
+        db, batch_id
+    )
+
+    return Response(
+        success=True, msg=HTTPMessages.TEMPERATURE_LOGS_RETRIEVED, data=temperature_logs
     )
