@@ -13,6 +13,11 @@ from app.schemas.machine import (
     MachineUpdate,
 )
 
+from app.schemas.oven_batch import (
+    OvenBatchBase,
+    OvenBatchCreate,
+    OvenBatch,
+)
 
 __all__ = [
     "Response",
@@ -20,5 +25,8 @@ __all__ = [
     "Machine",
     "MachineCreate",
     "MachineUpdate",
+    "OvenBatchBase",
+    "OvenBatchCreate",
+    "OvenBatch",
     "TemperatureLogBase",
 ]
