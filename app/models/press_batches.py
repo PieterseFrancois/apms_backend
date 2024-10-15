@@ -24,6 +24,6 @@ class PressBatch(Base):
     id = Column(Integer, primary_key=True)
     start_time = Column(DateTime, nullable=False)
     stop_time = Column(DateTime)
-    state = Column(Enum(BatchState, name="state_enum"), nullable=False)
+    state = Column(Enum(BatchState, name="batch_state_enum"), nullable=False)
     machine_id = Column(Integer, ForeignKey("machines.id"))
     press_logs = relationship("PressLog", back_populates="press_batch")

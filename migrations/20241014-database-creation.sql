@@ -1,6 +1,6 @@
 -- Create TYPE enum for oven_batches and press_batches
 CREATE TYPE log_type AS ENUM ('Error', 'Safety', 'Command', 'Phase', 'Confirmation');
-CREATE TYPE state_enum AS ENUM ('Active', 'Completed', 'Error');
+CREATE TYPE batch_state_enum AS ENUM ('ACTIVE', 'COMPLETED', 'ERROR');
 CREATE TYPE oven_log_description AS ENUM (
     'Error in heating process.',
     'Error in fan operation.',
@@ -44,7 +44,7 @@ CREATE TABLE oven_batches (
     id SERIAL PRIMARY KEY,
     start_time TIMESTAMP NOT NULL,
     stop_time TIMESTAMP,
-    state state_enum NOT NULL
+    state batch_state_enum NOT NULL
 );
 
 -- Create 'humidity_logs' table
@@ -73,7 +73,7 @@ CREATE TABLE press_batches (
     id SERIAL PRIMARY KEY,
     start_time TIMESTAMP NOT NULL,
     stop_time TIMESTAMP,
-    state state_enum NOT NULL,
+    state batch_state_enum NOT NULL,
     machine_id INT NOT NULL,
     FOREIGN KEY (machine_id) REFERENCES machines(id)
 );
