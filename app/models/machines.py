@@ -21,3 +21,4 @@ class Machine(Base):
     name = Column(String(255), nullable=False)
 
     temperature_logs = relationship("TemperatureLog", back_populates="machine")
+    oven_batches = relationship("OvenBatch", back_populates="machine")
