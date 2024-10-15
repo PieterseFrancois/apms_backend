@@ -11,8 +11,17 @@ class HTTPMessages(Enum):
     INTERNAL_SERVER_ERROR = "Internal server error."
     TEMPERATURE_LOG_CREATED = "Temperature log created successfully."
     TEMPERATURE_LOGS_RETRIEVED = "Temperature logs retrieved successfully."
+    # Websocket
+    WEBSOCKET_FAILURE_OVEN_COMMAND = (
+        "Failed to send the oven command over the websocket."
+    )
+
+    # Oven
     OVEN_STARTED = "Oven started successfully."
     OVEN_STOPPED = "Oven stopped successfully."
+    OVEN_START_FAILED = "Failed to start the oven."
+    OVEN_STOP_FAILED = "Failed to stop the oven."
+    OVEN_STATUS_RETRIEVED = "Oven status retrieved successfully."
 
     # Machines
     MACHINE_CREATED = "Machine created successfully."
