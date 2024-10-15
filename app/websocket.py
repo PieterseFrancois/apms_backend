@@ -36,13 +36,13 @@ class ConnectionManager:
         print(f"Client {client_id} not found in active connections")
 
     async def send_personal_message(
-        self, message: str, client_id: str, identifier: MessageIdentifiers
+        self, message: any, client_id: str, identifier: MessageIdentifiers
     ) -> None:
         """
         Sends a personal message to a specific client by client identifier.
 
         Args:
-            message (str): The message to send.
+            message (any): The message to send.
             client_id (str): The client identifier.
             identifier (MessageIdentifiers): The message identifier.
         """
