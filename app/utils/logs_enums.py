@@ -12,6 +12,9 @@ class LogType(Enum):
     PHASE = "Phase"
     CONFIRMATION = "Confirmation"
 
+    def __str__(self) -> str:
+        return self.value
+
 
 class OvenLogDescription(Enum):
     """
@@ -30,6 +33,9 @@ class OvenLogDescription(Enum):
     PHASE_FINISHED = "Baking process finished."
     BAKE_BATCH = "Starting oven to bake a batch."
     STOP_BAKE = "Stopping oven and baking process."
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class PressLogDescription(Enum):
@@ -52,6 +58,9 @@ class PressLogDescription(Enum):
     PRESS_BATCH = "Starting press to form a pot."
     STOP_PRESS = "Stopping press and pressing process."
     OPEN_PRESS = "Opening press."
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class OvenLogType(Enum):
