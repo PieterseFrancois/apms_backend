@@ -9,6 +9,11 @@ from app.schemas.machine import (
     MachineCreate,
     MachineUpdate,
 )
+from app.schemas.oven_batch import (
+    OvenBatchBase,
+    OvenBatchCreate,
+    OvenBatch,
+)
 
 
 class Response(BaseModel):
@@ -32,5 +37,8 @@ class Response(BaseModel):
         list[MachineBase],
         list[MachineCreate],
         list[MachineUpdate],
+        list[OvenBatchBase],
+        list[OvenBatchCreate],
+        list[OvenBatch],
         None,
     ]
