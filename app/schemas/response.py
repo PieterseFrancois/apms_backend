@@ -2,7 +2,6 @@ from typing import Union
 from pydantic import BaseModel
 from app.utils.http_messages import HTTPMessages
 
-from app.schemas.temperature import TemperatureLogBase
 from app.schemas.machine import (
     Machine,
     MachineBase,
@@ -13,6 +12,11 @@ from app.schemas.oven_batch import (
     OvenBatchBase,
     OvenBatchCreate,
     OvenBatch,
+)
+from app.schemas.temperature_log import (
+    TemperatureLogBase,
+    TemperatureLogCreate,
+    TemperatureLog,
 )
 
 
@@ -32,7 +36,6 @@ class Response(BaseModel):
     success: bool
     msg: HTTPMessages
     data: Union[
-        list[TemperatureLogBase],
         list[Machine],
         list[MachineBase],
         list[MachineCreate],
@@ -40,5 +43,9 @@ class Response(BaseModel):
         list[OvenBatchBase],
         list[OvenBatchCreate],
         list[OvenBatch],
+        list[TemperatureLogBase],
+        list[TemperatureLogCreate],
+        list[TemperatureLog],
         None,
+        list[None],
     ]
