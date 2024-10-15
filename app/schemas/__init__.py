@@ -2,10 +2,6 @@ from app.schemas.response import (
     Response,
 )
 
-from app.schemas.temperature import (
-    TemperatureLogBase,
-)
-
 from app.schemas.machine import (
     MachineBase,
     Machine,
@@ -19,6 +15,12 @@ from app.schemas.oven_batch import (
     OvenBatch,
 )
 
+from app.schemas.temperature_log import (
+    TemperatureLogBase,
+    TemperatureLogCreate,
+    TemperatureLog,
+)
+
 __all__ = [
     "Response",
     "MachineBase",
@@ -29,4 +31,6 @@ __all__ = [
     "OvenBatchCreate",
     "OvenBatch",
     "TemperatureLogBase",
+    "TemperatureLogCreate",
+    "TemperatureLog",
 ]
