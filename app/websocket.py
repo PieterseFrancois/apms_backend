@@ -46,14 +46,14 @@ class ConnectionManager:
             client_id (str): The client identifier.
             identifier (MessageIdentifiers): The message identifier.
         """
-
         # Add the identifier to the message
         message = json_serialize({"identifier": identifier.value, "message": message})
 
-        if client_id in self.active_connections:
-            websocket = self.active_connections[client_id]
-            await websocket.send_text(message)
-            print(f"Message sent to client {client_id}")
+        for client_id_registered, websocket in self.active_connections.items():
+            client_id = str(client_id)
+            if client_id == client_id_registered:
+                await websocket.send_text(message)
+                print(f"Message sent to client {client_id}")
 
     async def broadcast(self, message: any, identifier: MessageIdentifiers) -> None:
         """
