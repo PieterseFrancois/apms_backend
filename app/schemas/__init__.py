@@ -21,6 +21,13 @@ from app.schemas.temperature_log import (
     TemperatureLog,
 )
 
+from app.schemas.oven_logs import (
+    OvenLogBase,
+    OvenLogCreate,
+    OvenLog,
+    OvenLogExpanded,
+)
+
 __all__ = [
     "Response",
     "MachineBase",
@@ -33,4 +40,8 @@ __all__ = [
     "TemperatureLogBase",
     "TemperatureLogCreate",
     "TemperatureLog",
+    "OvenLogBase",
+    "OvenLogCreate",
+    "OvenLog",
+    "OvenLogExpanded",
 ]

@@ -18,6 +18,12 @@ from app.schemas.temperature_log import (
     TemperatureLogCreate,
     TemperatureLog,
 )
+from app.schemas.oven_logs import (
+    OvenLogBase,
+    OvenLogCreate,
+    OvenLog,
+    OvenLogExpanded,
+)
 
 
 class Response(BaseModel):
@@ -46,6 +52,10 @@ class Response(BaseModel):
         list[TemperatureLogBase],
         list[TemperatureLogCreate],
         list[TemperatureLog],
+        list[OvenLogBase],
+        list[OvenLogCreate],
+        list[OvenLog],
+        list[OvenLogExpanded],
         None,
         list[None],
     ]
