@@ -20,6 +20,7 @@ class MessageIdentifiers(Enum):
     Humidity = "Humidity"
     CurrentTemp = "CurrentTemp"
     BakePhase = "BakePhase"
+    OvenLog = "OvenLog"
 
     # Press
     Pressbatch = "Pressbatch"
