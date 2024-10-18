@@ -22,6 +22,8 @@ class HTTPMessages(Enum):
     OVEN_START_FAILED = "Failed to start the oven."
     OVEN_STOP_FAILED = "Failed to stop the oven."
     OVEN_STATUS_RETRIEVED = "Oven status retrieved successfully."
+    OVEN_LOG_CREATED = "Oven log created successfully."
+    OVEN_LOGS_RETRIEVED = "Oven logs retrieved successfully."
 
     # Machines
     MACHINE_CREATED = "Machine created successfully."
