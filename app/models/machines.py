@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from app.database import Base
 from sqlalchemy.orm import relationship
+from app.database import Base
 
 
 class Machine(Base):
@@ -20,5 +20,8 @@ class Machine(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
 
-    temperature_logs = relationship("TemperatureLog", back_populates="machine")
+    oven_logs = relationship("OvenLog", back_populates="machine")
+    press_logs = relationship("PressLog", back_populates="machine")
+
     oven_batches = relationship("OvenBatch", back_populates="machine")
+    temperature_logs = relationship("TemperatureLog", back_populates="machine")

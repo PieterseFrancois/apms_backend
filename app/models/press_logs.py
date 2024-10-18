@@ -3,18 +3,18 @@ from app.database import Base
 from sqlalchemy.orm import relationship
 
 from datetime import datetime, timezone
-from app.utils.logs_enums import LogType, PressLogDescription
+from app.utils.logs_enums import PressLogType
 
 
 class PressLog(Base):
     """
-    Represents the press_logs table.
+    Represents the press_logs table with the updated ENUM type.
 
     Attributes:
         id (int): The primary key of the table.
         batch_id (int): The batch id.
-        type (oven_log_types): The type of log.
-        description (oven_log_description): The description of the log.
+        machine_id (int): The ID of the machine.
+        type (PressLogType): The type of log (new ENUM type).
         created_at (datetime): The timestamp when the log was created.
 
     Table Name:
@@ -24,10 +24,10 @@ class PressLog(Base):
     __tablename__ = "press_logs"
 
     id = Column(Integer, primary_key=True)
-    batch_id = Column(Integer, ForeignKey("press_batches.id"))
-    type = Column(Enum(LogType, name="log_type"), nullable=False)
-    description = Column(
-        Enum(PressLogDescription, name="press_log_description"), nullable=False
-    )
+    batch_id = Column(Integer, ForeignKey("press_batches.id"), nullable=True)
+    machine_id = Column(Integer, ForeignKey("machines.id"), nullable=False)
+    type = Column(Enum(PressLogType, name="press_log_type_enum"), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(tz=timezone.utc))
+
     press_batch = relationship("PressBatch", back_populates="press_logs")
+    machine = relationship("Machine", back_populates="press_logs")
