@@ -6,6 +6,7 @@ from app.dependencies import get_db
 from app.utils.http_messages import HTTPMessages
 from app.utils.message_identifiers import MessageIdentifiers
 from app.utils.state_enum import BatchState
+from app.utils.logs_enums import OvenLogDescription, OvenLogType
 
 from app.schemas import (
     Response,
@@ -14,6 +15,10 @@ from app.schemas import (
     TemperatureLogBase,
     TemperatureLogCreate,
     TemperatureLog,
+    OvenLogBase,
+    OvenLogCreate,
+    OvenLog,
+    OvenLogExpanded,
 )
 
 from app.crud.oven import (
@@ -24,6 +29,8 @@ from app.crud.oven import (
     create_temperature_log,
     get_temperature_logs_for_batch,
     get_temperature_logs_for_machine,
+    create_log,
+    get_logs_for_machine,
 )
 
 from datetime import datetime, timezone
@@ -209,7 +216,9 @@ async def create_temperature_log_route(
     latest_batch: OvenBatch = get_latest_oven_batch_for_machine(db, machine_id)
 
     # Check if a batch is active
-    if latest_batch.state != BatchState.ACTIVE:
+    if latest_batch is None:
+        batch_id = None
+    elif latest_batch.state != BatchState.ACTIVE:
         batch_id = None
     else:
         batch_id = latest_batch.id
@@ -299,4 +308,94 @@ def get_temperature_logs_for_batch_route(
 
     return Response(
         success=True, msg=HTTPMessages.TEMPERATURE_LOGS_RETRIEVED, data=temperature_logs
+    )
+
+
+@router.post("/oven/log/{machine_id}", response_model=Response, tags=["Oven - Log"])
+async def create_log_route(
+    machine_id: int,
+    type: OvenLogType,
+    batch_id: int | None = None,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Creates a log for the oven.
+
+    Args:
+        machine_id (int): The machine identifier.
+        type (OvenLogType): The type of log.
+        batch_id (int | None): The batch identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the log details.
+    """
+
+    new_log = OvenLogCreate(
+        machine_id=machine_id,
+        type=type,
+        batch_id=batch_id,
+    )
+
+    log: OvenLog = create_log(db, new_log)
+
+    created_log = OvenLogExpanded(
+        id=log.id,
+        created_at=log.created_at,
+        machine_id=log.machine_id,
+        type=log.type.category,
+        description=log.type.description,
+        batch_id=log.batch_id,
+    )
+
+    created_log_dict: dict = {
+        "id": created_log.id,
+        "created_at": created_log.created_at,
+        "machine_id": created_log.machine_id,
+        "type": created_log.type.value,
+        "description": created_log.description.value,
+        "batch_id": created_log.batch_id,
+    }
+
+    await WebSocketManager.send_personal_message(
+        created_log_dict, machine_id, MessageIdentifiers.OvenLog
+    )
+
+    return Response(
+        success=True, msg=HTTPMessages.OVEN_LOG_CREATED, data=[created_log]
+    )
+
+
+@router.get("/oven/logs/{machine_id}", response_model=Response, tags=["Oven - Log"])
+def get_logs_for_machine_route(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Retrieves the logs for the oven based on the machine identifier.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the logs.
+    """
+
+    logs: list[OvenLog] = get_logs_for_machine(db, machine_id)
+
+    expanded_logs = [
+        OvenLogExpanded(
+            id=log.id,
+            created_at=log.created_at,
+            machine_id=log.machine_id,
+            type=log.type.category,
+            description=log.type.description,
+            batch_id=log.batch_id,
+        )
+        for log in logs
+    ]
+
+    return Response(
+        success=True, msg=HTTPMessages.OVEN_LOGS_RETRIEVED, data=expanded_logs
     )

@@ -3,11 +3,13 @@ from sqlalchemy.orm import Session
 from app.models import (
     OvenBatch as OvenBatchORM,
     TemperatureLog as TemperatureLogORM,
+    OvenLog as OvenLogORM,
 )
 
 from app.schemas import (
     OvenBatchCreate,
     TemperatureLogCreate,
+    OvenLogCreate,
 )
 
 from app.utils.state_enum import BatchState
@@ -253,6 +255,62 @@ def get_temperature_logs_for_machine(
     return (
         db.query(TemperatureLogORM)
         .filter(TemperatureLogORM.machine_id == machine_id)
+        .limit(limit)
+        .all()
+    )
+
+
+def create_log(db: Session, log: OvenLogCreate) -> OvenLogORM:
+    """
+    Creates a log for the oven.
+
+    Args:
+        db (Session): The database session.
+        log (OvenLogCreate): The log details.
+
+    Returns:
+        OvenLogCreate: The response containing the log details.
+    """
+
+    try:
+        new_log = OvenLogORM(
+            machine_id=log.machine_id,
+            type=log.type,
+            batch_id=log.batch_id,
+            created_at=datetime.now(tz=timezone.utc),
+        )
+
+        db.add(new_log)
+        db.commit()
+        db.refresh(new_log)
+
+        return new_log
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def get_logs_for_machine(
+    db: Session, machine_id: int, limit: int | None = 100
+) -> list[OvenLogORM] | None:
+    """
+    Retrieves the logs for a machine. Option to specify the limit.
+
+    Args:
+        db (Session): The database session.
+        machine_id (int): The machine identifier.
+        limit (int | None): The limit of the number of logs to retrieve.
+
+    Returns:
+        list[OvenLogORM] | None: The list of logs.
+    """
+
+    if limit is None:
+        return db.query(OvenLogORM).filter(OvenLogORM.machine_id == machine_id).all()
+
+    return (
+        db.query(OvenLogORM)
+        .filter(OvenLogORM.machine_id == machine_id)
         .limit(limit)
         .all()
     )
