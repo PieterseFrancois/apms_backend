@@ -111,3 +111,29 @@ def delete_machine(db: Session, machine_id: int) -> MachineORM:
     except Exception as e:
         db.rollback()
         raise e
+
+
+def set_machine_active_temperature_profile(
+    db: Session, machine_id: int, profile_id: int
+) -> MachineORM:
+    """
+    Sets the active temperature profile for a machine.
+
+    Args:
+        db (Session): The database session.
+        machine_id (int): The machine ID.
+        profile_id (int): The profile ID.
+
+    Returns:
+        MachineORM: The updated machine.
+    """
+
+    try:
+        db_machine = db.query(MachineORM).filter(MachineORM.id == machine_id).first()
+        db_machine.active_profile_id = profile_id
+        db.commit()
+        db.refresh(db_machine)
+        return db_machine
+    except Exception as e:
+        db.rollback()
+        raise e
