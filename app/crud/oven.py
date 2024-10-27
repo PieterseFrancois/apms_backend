@@ -4,12 +4,15 @@ from app.models import (
     OvenBatch as OvenBatchORM,
     TemperatureLog as TemperatureLogORM,
     OvenLog as OvenLogORM,
+    TemperatureProfile as TemperatureProfileORM,
+    Machine as MachineORM,
 )
 
 from app.schemas import (
     OvenBatchCreate,
     TemperatureLogCreate,
     OvenLogCreate,
+    TemperatureProfileCreate,
 )
 
 from app.utils.state_enum import BatchState
@@ -314,3 +317,123 @@ def get_logs_for_machine(
         .limit(limit)
         .all()
     )
+
+
+def create_temperature_profile(
+    db: Session, temperature_profile: TemperatureProfileCreate
+) -> TemperatureProfileORM:
+    """
+    Creates a temperature profile for the oven.
+
+    Args:
+        db (Session): The database session.
+        temperature_profile (TemperatureProfileCreate): The temperature profile details.
+
+    Returns:
+        TemperatureProfileORM: The response containing the profile details.
+    """
+
+    try:
+        new_profile = TemperatureProfileORM(
+            label=temperature_profile.label,
+            max_temp=temperature_profile.max_temp,
+            safe_temp=temperature_profile.safe_temp,
+            desired_temp=temperature_profile.desired_temp,
+            bake_time_sec=temperature_profile.bake_time_sec,
+            machine_id=temperature_profile.machine_id,
+        )
+
+        db.add(new_profile)
+        db.commit()
+        db.refresh(new_profile)
+
+        return new_profile
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def get_temperature_profiles_for_machine(
+    db: Session, machine_id: int
+) -> list[TemperatureProfileORM]:
+    """
+    Retrieves the temperature profiles for a machine.
+
+    Args:
+        db (Session): The database session.
+        machine_id (int): The machine identifier.
+
+    Returns:
+        list[TemperatureProfileORM]: The list of temperature profiles.
+    """
+
+    return (
+        db.query(TemperatureProfileORM)
+        .filter(TemperatureProfileORM.machine_id == machine_id)
+        .all()
+    )
+
+
+def delete_temperature_profile(db: Session, profile_id: int) -> bool:
+    """
+    Deletes a temperature profile for the oven.
+
+    Args:
+        db (Session): The database session.
+        profile_id (int): The profile identifier.
+
+    Returns:
+        bool: The response indicating the success of the operation.
+    """
+
+    try:
+        db.query(TemperatureProfileORM).filter(
+            TemperatureProfileORM.id == profile_id
+        ).delete()
+        db.commit()
+
+        return True
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def get_active_temperature_profile_for_machine(
+    db: Session, machine_id: int
+) -> TemperatureProfileORM | None:
+    """
+    Retrieves the active temperature profile for a machine by looking at the active id in the machines table
+
+    Args:
+        db (Session): The database session.
+        machine_id (int): The machine identifier.
+
+    Returns:
+        TemperatureProfileORM | None: The response containing the profile details.
+    """
+
+    # Get the machine
+    machine: MachineORM = (
+        db.query(MachineORM).filter(MachineORM.id == machine_id).first()
+    )
+
+    # If no active profile, get the first profile and set it as active
+    if machine.active_profile_id is None:
+        active_profile = (
+            db.query(TemperatureProfileORM)
+            .filter(TemperatureProfileORM.machine_id == machine_id)
+            .first()
+        )
+
+        if active_profile:
+            machine.active_profile_id = active_profile.id
+            db.commit()
+            db.refresh(machine)
+    else:
+        active_profile = (
+            db.query(TemperatureProfileORM)
+            .filter(TemperatureProfileORM.id == machine.active_profile_id)
+            .first()
+        )
+
+    return active_profile
