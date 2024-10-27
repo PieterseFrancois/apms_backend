@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.database import Base
-from app.utils.logs_enums import LogType, OvenLogDescription, OvenLogType
+from app.utils.logs_enums import OvenLogType
 
 
 class OvenLog(Base):
