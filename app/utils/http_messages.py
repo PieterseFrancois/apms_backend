@@ -31,6 +31,17 @@ class HTTPMessages(Enum):
     MACHINES_RETRIEVED = "Machines retrieved successfully."
     MACHINE_UPDATED = "Machine updated successfully."
     MACHINE_DELETED = "Machine deleted successfully."
+    MACHINE_ACTIVE_PROFILE_SET = "Active temperature profile set successfully."
+
+    # Temperature Profiles
+    TEMPERATURE_PROFILE_CREATED = "Temperature profile created successfully."
+    TEMPERATURE_PROFILES_RETRIEVED = "Temperature profiles retrieved successfully."
+    TEMPERATURE_PROFILE_UPDATED = "Temperature profile updated successfully."
+    TEMPERATURE_PROFILE_DELETED = "Temperature profile deleted successfully."
+    NO_TEMPERATURE_PROFILES_FOUND = "No temperature profiles found."
+    ACTIVE_TEMPERATURE_PROFILE_RETRIEVED = (
+        "Active temperature profile retrieved successfully."
+    )
 
     def __str__(self) -> str:
         return self.value
