@@ -21,6 +21,7 @@ class MessageIdentifiers(Enum):
     CurrentTemp = "CurrentTemp"
     BakePhase = "BakePhase"
     OvenLog = "OvenLog"
+    ActiveProfile = "ActiveProfile"
 
     # Press
     Pressbatch = "Pressbatch"
