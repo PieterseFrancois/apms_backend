@@ -28,6 +28,12 @@ from app.schemas.oven_logs import (
     OvenLogExpanded,
 )
 
+from app.schemas.temperature_profile import (
+    TemperatureProfileBase,
+    TemperatureProfileCreate,
+    TemperatureProfile,
+)
+
 __all__ = [
     "Response",
     "MachineBase",
@@ -44,4 +50,7 @@ __all__ = [
     "OvenLogCreate",
     "OvenLog",
     "OvenLogExpanded",
+    "TemperatureProfileBase",
+    "TemperatureProfileCreate",
+    "TemperatureProfile",
 ]
