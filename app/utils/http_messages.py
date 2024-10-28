@@ -43,6 +43,20 @@ class HTTPMessages(Enum):
         "Active temperature profile retrieved successfully."
     )
 
+    # Press
+    PRESS_STARTED = "Press started successfully."
+    WEBSOCKET_FAILURE_PRESS_COMMAND = (
+        "Failed to send the press command over the websocket."
+    )
+    PRESS_START_FAILED = "Failed to start the press."
+    PRESS_STOPPED = "Press stopped successfully."
+    PRESS_STOP_FAILED = "Failed to stop the press."
+    PRESS_STATUS_RETRIEVED = "Press status retrieved successfully."
+    PRESS_CONFIRMATION_FAILED = "Failed to confirm the press operation."
+    PRESS_CONFIRM_INSERTED = "Press confirmed inserted successfully."
+    PRESS_OPENED = "Press opened successfully."
+    PRESS_OPEN_FAILED = "Failed to open the press."
+
     # Press Logs
     PRESS_LOG_CREATED = "Press log created successfully."
     PRESS_LOGS_RETRIEVED = "Press logs retrieved successfully."
