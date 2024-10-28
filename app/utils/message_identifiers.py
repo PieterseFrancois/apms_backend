@@ -34,6 +34,7 @@ class MessageIdentifiers(Enum):
     PressOverride = "PressOverride"
     CurrentDistance = "CurrentDist"
     PressPhase = "PressPhase"
+    PressLog = "PressLog"
 
     def __str__(self) -> str:
         return self.value
