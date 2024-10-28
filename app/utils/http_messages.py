@@ -43,5 +43,9 @@ class HTTPMessages(Enum):
         "Active temperature profile retrieved successfully."
     )
 
+    # Press Logs
+    PRESS_LOG_CREATED = "Press log created successfully."
+    PRESS_LOGS_RETRIEVED = "Press logs retrieved successfully."
+
     def __str__(self) -> str:
         return self.value
