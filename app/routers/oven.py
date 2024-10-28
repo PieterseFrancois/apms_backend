@@ -94,14 +94,14 @@ async def start_oven(
         )
     except Exception:
         # Create log entry
-        # Placeholder for the actual implementation.
+        # create_log_route(machine_id, OvenLogType.ERROR, None, db)
 
         return Response(
             success=False, msg=HTTPMessages.WEBSOCKET_FAILURE_OVEN_COMMAND, data=[]
         )
 
     # Create log entry
-    # Placeholder for the actual implementation.
+    await create_log_route(machine_id, OvenLogType.BAKE_BATCH, None, db)
 
     return Response(success=True, msg=HTTPMessages.OVEN_STARTED, data=[oven_batch])
 
@@ -150,7 +150,7 @@ async def stop_oven(
         )
 
     # Create log entry
-    # Placeholder for the actual implementation.
+    await create_log_route(machine_id, OvenLogType.STOP_BAKE, None, db)
 
     return Response(success=True, msg=HTTPMessages.OVEN_STOPPED, data=[])
 
