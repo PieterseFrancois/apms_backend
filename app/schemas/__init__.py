@@ -40,6 +40,11 @@ from app.schemas.press_logs import (
     PressLog,
     PressLogExpanded,
 )
+from app.schemas.press_batch import (
+    PressBatchBase,
+    PressBatch,
+    PressBatchCreate,
+)
 
 __all__ = [
     "Response",
@@ -64,4 +69,7 @@ __all__ = [
     "PressLogCreate",
     "PressLog",
     "PressLogExpanded",
+    "PressBatchBase",
+    "PressBatch",
+    "PressBatchCreate",
 ]
