@@ -35,6 +35,11 @@ from app.schemas.press_logs import (
     PressLog,
     PressLogExpanded,
 )
+from app.schemas.press_batch import (
+    PressBatchBase,
+    PressBatch,
+    PressBatchCreate,
+)
 
 
 class Response(BaseModel):
@@ -74,6 +79,9 @@ class Response(BaseModel):
         list[PressLogCreate],
         list[PressLog],
         list[PressLogExpanded],
+        list[PressBatchBase],
+        list[PressBatch],
+        list[PressBatchCreate],
         None,
         list[None],
     ]
