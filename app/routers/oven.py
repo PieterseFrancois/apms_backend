@@ -535,7 +535,7 @@ async def set_machine_active_temperature_profile_route(
     updated_machine: Machine = Machine(
         id=updated_machine_orm.id,
         name=updated_machine_orm.name,
-        active_profile_id=updated_machine_orm.active_profile_id
+        active_profile_id=updated_machine_orm.active_profile_id,
     )
 
     # Send the active profile to the machine

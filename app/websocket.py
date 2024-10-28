@@ -23,8 +23,9 @@ class ConnectionManager:
         if client_id not in self.active_connections:
             self.active_connections[client_id] = []
         self.active_connections[client_id].append(websocket)
-        print(f"Client {client_id} connected. Total connections: {len(self.active_connections[client_id])}")
-
+        print(
+            f"Client {client_id} connected. Total connections: {len(self.active_connections[client_id])}"
+        )
 
     def disconnect(self, client_id: str, websocket: WebSocket) -> None:
         """
@@ -36,8 +37,12 @@ class ConnectionManager:
         client_id = str(client_id)
         if client_id in self.active_connections:
             self.active_connections[client_id].remove(websocket)
-            print(f"Client {client_id} disconnected. Remaining connections: {len(self.active_connections[client_id])}")
-            if not self.active_connections[client_id]:  # If no more connections, remove the client_id entry
+            print(
+                f"Client {client_id} disconnected. Remaining connections: {len(self.active_connections[client_id])}"
+            )
+            if not self.active_connections[
+                client_id
+            ]:  # If no more connections, remove the client_id entry
                 del self.active_connections[client_id]
 
     async def send_personal_message(

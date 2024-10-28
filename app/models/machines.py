@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+
 class Machine(Base):
     """
     Represents the machines table.
@@ -16,9 +17,11 @@ class Machine(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
-    
+
     # Foreign key to the active profile
-    active_profile_id = Column(Integer, ForeignKey("temperature_profiles.id"), nullable=True)
+    active_profile_id = Column(
+        Integer, ForeignKey("temperature_profiles.id"), nullable=True
+    )
 
     # Relationship to the active profile
     active_profile = relationship(

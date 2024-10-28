@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Float, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+
 class TemperatureProfile(Base):
     """
     Represents the temperature_profiles table.
