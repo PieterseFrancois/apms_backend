@@ -29,6 +29,12 @@ from app.schemas.temperature_profile import (
     TemperatureProfileCreate,
     TemperatureProfile,
 )
+from app.schemas.press_logs import (
+    PressLogBase,
+    PressLogCreate,
+    PressLog,
+    PressLogExpanded,
+)
 
 
 class Response(BaseModel):
@@ -64,6 +70,10 @@ class Response(BaseModel):
         list[TemperatureProfileBase],
         list[TemperatureProfileCreate],
         list[TemperatureProfile],
+        list[PressLogBase],
+        list[PressLogCreate],
+        list[PressLog],
+        list[PressLogExpanded],
         None,
         list[None],
     ]

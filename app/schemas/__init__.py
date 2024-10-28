@@ -34,6 +34,13 @@ from app.schemas.temperature_profile import (
     TemperatureProfile,
 )
 
+from app.schemas.press_logs import (
+    PressLogBase,
+    PressLogCreate,
+    PressLog,
+    PressLogExpanded,
+)
+
 __all__ = [
     "Response",
     "MachineBase",
@@ -53,4 +60,8 @@ __all__ = [
     "TemperatureProfileBase",
     "TemperatureProfileCreate",
     "TemperatureProfile",
+    "PressLogBase",
+    "PressLogCreate",
+    "PressLog",
+    "PressLogExpanded",
 ]
