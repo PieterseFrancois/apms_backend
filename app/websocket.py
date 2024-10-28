@@ -8,7 +8,7 @@ from app.utils.message_identifiers import MessageIdentifiers
 class ConnectionManager:
     def __init__(self):
         # Dictionary to store active WebSocket connections by client_id
-        self.active_connections: Dict[str, WebSocket] = {}
+        self.active_connections: Dict[str, list[WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, client_id: str) -> None:
         """
@@ -18,22 +18,27 @@ class ConnectionManager:
             websocket (WebSocket): The WebSocket connection.
             client_id (str): The client identifier.
         """
+        client_id = str(client_id)
         await websocket.accept()
-        self.active_connections[client_id] = websocket
-        print(f"Client {client_id} connected")
+        if client_id not in self.active_connections:
+            self.active_connections[client_id] = []
+        self.active_connections[client_id].append(websocket)
+        print(f"Client {client_id} connected. Total connections: {len(self.active_connections[client_id])}")
 
-    def disconnect(self, client_id: str) -> None:
+
+    def disconnect(self, client_id: str, websocket: WebSocket) -> None:
         """
         Removes and closes a WebSocket connection by client identifier.
 
         Args:
             client_id (str): The client identifier.
         """
+        client_id = str(client_id)
         if client_id in self.active_connections:
-            websocket = self.active_connections.pop(client_id)
-            print(f"Client {client_id} disconnected")
-            return websocket.close()
-        print(f"Client {client_id} not found in active connections")
+            self.active_connections[client_id].remove(websocket)
+            print(f"Client {client_id} disconnected. Remaining connections: {len(self.active_connections[client_id])}")
+            if not self.active_connections[client_id]:  # If no more connections, remove the client_id entry
+                del self.active_connections[client_id]
 
     async def send_personal_message(
         self, message: any, client_id: str, identifier: MessageIdentifiers
@@ -48,10 +53,10 @@ class ConnectionManager:
         """
         # Add the identifier to the message
         message = json_serialize({"identifier": identifier.value, "message": message})
+        client_id = str(client_id)
 
-        for client_id_registered, websocket in self.active_connections.items():
-            client_id = str(client_id)
-            if client_id == client_id_registered:
+        if client_id in self.active_connections:
+            for websocket in self.active_connections[client_id]:
                 await websocket.send_text(message)
                 print(f"Message sent to client {client_id}")
 
@@ -69,9 +74,10 @@ class ConnectionManager:
 
         message = json_serialize(message)
 
-        for client_id, websocket in self.active_connections.items():
-            await websocket.send_text(message)
-            print(f"Broadcast message to client {client_id}")
+        for client_id, websockets in self.active_connections.items():
+            for websocket in websockets:
+                await websocket.send_text(message)
+                print(f"Broadcast message to client {client_id}")
 
 
 # Create a global instance of the connection manager
