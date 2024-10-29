@@ -19,6 +19,7 @@ origins: list[str] = [
     "http://localhost:8000",
     "http://localhost:5173",
     "http://localhost:4200",
+    "http://automaticpulpmouldingmachine.s3-website-eu-west-1.amazonaws.com",
 ]
 
 
