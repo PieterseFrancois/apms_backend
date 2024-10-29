@@ -31,6 +31,7 @@ from datetime import datetime, timezone
 
 router = APIRouter()
 
+
 @router.get("/press/start/{machine_id}", response_model=Response, tags=["Press"])
 async def start_press(
     machine_id: int,
@@ -175,7 +176,9 @@ def get_press_batches_route(
         Response: The response containing the press batches.
     """
 
-    press_batches: list[PressBatch] | None = get_press_batches_for_machine(db, machine_id)
+    press_batches: list[PressBatch] | None = get_press_batches_for_machine(
+        db, machine_id
+    )
 
     return Response(
         success=True, msg=HTTPMessages.PRESS_STATUS_RETRIEVED, data=press_batches
@@ -272,7 +275,9 @@ def get_logs_for_machine_route(
     )
 
 
-@router.get("/press/confirm_inserted/{machine_id}", response_model=Response, tags=["Press"])
+@router.get(
+    "/press/confirm_inserted/{machine_id}", response_model=Response, tags=["Press"]
+)
 async def press_confirm_inserted(
     machine_id: int,
     db: Session = Depends(get_db),
@@ -296,7 +301,9 @@ async def press_confirm_inserted(
     except Exception:
         # Create log entry
         # Placeholder for the actual implementation.
-        return Response(success=False, msg=HTTPMessages.PRESS_CONFIRMATION_FAILED, data=[])
+        return Response(
+            success=False, msg=HTTPMessages.PRESS_CONFIRMATION_FAILED, data=[]
+        )
 
     # Websocket
     try:
