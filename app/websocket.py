@@ -30,7 +30,7 @@ class ConnectionManager:
         )
 
         self.send_personal_message(
-            self, f"{client_id} connected to the server", client_id, MessageIdentifiers.MachineConnected
+            f"{client_id} connected to the server", client_id, MessageIdentifiers.MachineConnected
         )
 
     def disconnect(self, client_id: str, websocket: WebSocket) -> None:
@@ -52,7 +52,7 @@ class ConnectionManager:
                 del self.active_connections[client_id]
 
         self.send_personal_message(
-            self, f"{client_id} disconnected from the server", client_id, MessageIdentifiers.MachineDisconnected
+            f"{client_id} disconnected from the server", client_id, MessageIdentifiers.MachineDisconnected
         )
 
     async def send_personal_message(
