@@ -4,6 +4,8 @@ from typing import Dict
 from app.utils.json_utils import json_serialize
 from app.utils.message_identifiers import MessageIdentifiers
 
+GROUP_1_ID: int = 8
+
 
 class ConnectionManager:
     def __init__(self):
@@ -27,6 +29,10 @@ class ConnectionManager:
             f"Client {client_id} connected. Total connections: {len(self.active_connections[client_id])}"
         )
 
+        self.send_personal_message(
+            self, f"{client_id} connected to the server", client_id, MessageIdentifiers.MachineConnected
+        )
+
     def disconnect(self, client_id: str, websocket: WebSocket) -> None:
         """
         Removes and closes a WebSocket connection by client identifier.
@@ -44,6 +50,10 @@ class ConnectionManager:
                 client_id
             ]:  # If no more connections, remove the client_id entry
                 del self.active_connections[client_id]
+
+        self.send_personal_message(
+            self, f"{client_id} disconnected from the server", client_id, MessageIdentifiers.MachineDisconnected
+        )
 
     async def send_personal_message(
         self, message: any, client_id: str, identifier: MessageIdentifiers
@@ -65,6 +75,13 @@ class ConnectionManager:
                 await websocket.send_text(message)
                 print(f"Message sent to client {client_id}")
 
+        # Create the gui id for the clients
+        gui_id: str = "gui_" + client_id
+        if gui_id in self.active_connections:
+            for websocket in self.active_connections[gui_id]:
+                await websocket.send_text(message)
+                print(f"Message sent to client {gui_id}")
+
     async def broadcast(self, message: any, identifier: MessageIdentifiers) -> None:
         """
         Broadcasts a message to all connected clients.
@@ -83,6 +100,23 @@ class ConnectionManager:
             for websocket in websockets:
                 await websocket.send_text(message)
                 print(f"Broadcast message to client {client_id}")
+
+    def is_client_connected(self, client_id: str) -> bool:
+        """
+        Checks if a client is connected.
+
+        Args:
+            client_id (str): The client identifier.
+
+        Returns:
+            bool: True if the client is connected, False otherwise.
+        """
+
+        # Bypass group for demonstration purposes
+        if (client_id == GROUP_1_ID):
+            return True
+
+        return str(client_id) in self.active_connections
 
 
 # Create a global instance of the connection manager
