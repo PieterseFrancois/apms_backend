@@ -19,6 +19,8 @@ from app.crud.machines import (
     delete_machine,
 )
 
+from app.websocket import manager as WebSocketManager
+
 
 router = APIRouter()
 
@@ -145,4 +147,27 @@ def delete_machine_route(
         success=True,
         msg=HTTPMessages.MACHINE_DELETED,
         data=[deleted_machine],
+    )
+
+
+@router.get("/machine/{machine_id}/hmi-connected", response_model=Response, tags=["Machines"])
+def check_hmi_connected(
+    machine_id: int,
+) -> Response:
+    """
+    Checks if the HMI is connected to the machine.
+
+    Args:
+        machine_id (int): The machine ID.
+
+    Returns:
+        Response: The response containing the HMI connection status.
+    """
+
+    hmi_connected: bool = WebSocketManager.is_client_connected(machine_id)
+
+    return Response(
+        success=True,
+        msg=HTTPMessages.CONNECTION_STATUS_RETRIEVED,
+        data=hmi_connected,
     )
