@@ -17,6 +17,8 @@ class HTTPMessages(Enum):
     )
 
     # Oven
+    OVEN_START_REQUEST = "Oven start request received."
+    OVEN_STOP_REQUEST = "Oven stop request received."
     OVEN_STARTED = "Oven started successfully."
     OVEN_STOPPED = "Oven stopped successfully."
     OVEN_START_FAILED = "Failed to start the oven."
@@ -32,6 +34,7 @@ class HTTPMessages(Enum):
     MACHINE_UPDATED = "Machine updated successfully."
     MACHINE_DELETED = "Machine deleted successfully."
     MACHINE_ACTIVE_PROFILE_SET = "Active temperature profile set successfully."
+    CONNECTION_STATUS_RETRIEVED = "Connection status retrieved successfully."
 
     # Temperature Profiles
     TEMPERATURE_PROFILE_CREATED = "Temperature profile created successfully."
@@ -44,6 +47,8 @@ class HTTPMessages(Enum):
     )
 
     # Press
+    PRESS_START_REQUEST = "Press start request received."
+    PRESS_STOP_REQUEST = "Press stop request received."
     PRESS_STARTED = "Press started successfully."
     WEBSOCKET_FAILURE_PRESS_COMMAND = (
         "Failed to send the press command over the websocket."
