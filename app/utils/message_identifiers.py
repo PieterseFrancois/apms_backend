@@ -7,6 +7,8 @@ class MessageIdentifiers(Enum):
     """
 
     # Oven
+    RequestStartOven = "RequestStartOven"
+    RequestStopOven = "RequestStopOven"
     BakeBatch = "BakeBatch"
     StopBake = "StopBake"
     EHeat = "EHeat"
@@ -24,6 +26,8 @@ class MessageIdentifiers(Enum):
     ActiveProfile = "ActiveProfile"
 
     # Press
+    RequestStartPress = "RequestStartPress"
+    RequestStopPress = "RequestStopPress"
     Pressbatch = "Pressbatch"
     StopPress = "StopPress"
     OpenPress = "OpenPress"
@@ -35,6 +39,10 @@ class MessageIdentifiers(Enum):
     CurrentDistance = "CurrentDist"
     PressPhase = "PressPhase"
     PressLog = "PressLog"
+
+    # Machine
+    MachineConnected = "MachineConnected"
+    MachineDisconnected = "MachineDisconnected"
 
     def __str__(self) -> str:
         return self.value
