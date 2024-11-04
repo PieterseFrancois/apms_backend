@@ -39,7 +39,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str) -> None:
         while True:
             await websocket.receive_text()
     except Exception:
-        WebSocketManager.disconnect(client_id, websocket)
+        await WebSocketManager.disconnect(client_id, websocket)
 
 
 @app.exception_handler(RequestValidationError)

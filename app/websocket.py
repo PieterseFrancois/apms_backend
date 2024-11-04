@@ -29,11 +29,11 @@ class ConnectionManager:
             f"Client {client_id} connected. Total connections: {len(self.active_connections[client_id])}"
         )
 
-        self.send_personal_message(
+        await self.send_personal_message(
             f"{client_id} connected to the server", client_id, MessageIdentifiers.MachineConnected
         )
 
-    def disconnect(self, client_id: str, websocket: WebSocket) -> None:
+    async def disconnect(self, client_id: str, websocket: WebSocket) -> None:
         """
         Removes and closes a WebSocket connection by client identifier.
 
@@ -51,7 +51,7 @@ class ConnectionManager:
             ]:  # If no more connections, remove the client_id entry
                 del self.active_connections[client_id]
 
-        self.send_personal_message(
+        await self.send_personal_message(
             f"{client_id} disconnected from the server", client_id, MessageIdentifiers.MachineDisconnected
         )
 

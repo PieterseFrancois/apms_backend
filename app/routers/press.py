@@ -57,7 +57,7 @@ async def request_start_press(
 
     # Bypass group for demonstration purposes
     if (machine_id == GROUP_1_ID):
-        start_press(machine_id, db)
+        await start_press(machine_id, db)
 
     return Response(success=True, msg=HTTPMessages.PRESS_START_REQUEST, data=[]) 
 
@@ -85,7 +85,7 @@ async def request_stop_press(
 
     # Bypass group for demonstration purposes
     if (machine_id == GROUP_1_ID):
-        stop_press(machine_id, db)
+        await stop_press(machine_id, db)
 
     return Response(success=True, msg=HTTPMessages.PRESS_STOP_REQUEST, data=[])
 
