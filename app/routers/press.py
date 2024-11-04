@@ -31,6 +31,64 @@ from datetime import datetime, timezone
 
 router = APIRouter()
 
+GROUP_1_ID: int = 8
+
+
+@router.get("/press/request_start/{machine_id}", response_model=Response, tags=["Press"])
+async def request_start_press(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Requests to start the press.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the press status.
+    """
+
+    # Send a message to the HMI to start the press
+    await WebSocketManager.send_personal_message(
+        "", machine_id, MessageIdentifiers.RequestStartPress
+    )
+
+    # Bypass group for demonstration purposes
+    if (machine_id == GROUP_1_ID):
+        start_press(machine_id, db)
+
+    return Response(success=True, msg=HTTPMessages.PRESS_START_REQUEST, data=[]) 
+
+
+@router.get("/press/request_stop/{machine_id}", response_model=Response, tags=["Press"])
+async def request_stop_press(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Requests to stop the press.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the press status.
+    """
+
+    # Send a message to the HMI to stop the press
+    await WebSocketManager.send_personal_message(
+        "", machine_id, MessageIdentifiers.RequestStopPress
+    )
+
+    # Bypass group for demonstration purposes
+    if (machine_id == GROUP_1_ID):
+        stop_press(machine_id, db)
+
+    return Response(success=True, msg=HTTPMessages.PRESS_STOP_REQUEST, data=[])
+
 
 @router.get("/press/start/{machine_id}", response_model=Response, tags=["Press"])
 async def start_press(
@@ -47,6 +105,7 @@ async def start_press(
     Returns:
         Response: The response containing the press status.
     """
+    stop_active_press_batch(db, machine_id)
 
     # Create press batch
     new_press_batch = PressBatchCreate(
@@ -230,6 +289,9 @@ async def create_log_route(
         "description": created_log.description.value,
         "batch_id": created_log.batch_id,
     }
+
+    if log.type == PressLogType.PHASE_FINISHED:
+        stop_active_press_batch(db, machine_id)
 
     await WebSocketManager.send_personal_message(
         created_log_dict, machine_id, MessageIdentifiers.PressLog

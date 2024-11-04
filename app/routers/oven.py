@@ -48,6 +48,64 @@ from datetime import datetime, timezone
 
 router = APIRouter()
 
+GROUP_1_ID: int = 8
+
+
+@router.get("/oven/request_start/{machine_id}", response_model=Response, tags=["Oven"])
+async def request_start_oven(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Requests to start the oven.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the oven status.
+    """
+
+    # Send a message to the HMI to start the oven
+    await WebSocketManager.send_personal_message(
+        "", machine_id, MessageIdentifiers.RequestStartOven
+    )
+
+    # Bypass group for demonstration purposes
+    if (machine_id == GROUP_1_ID):
+        start_oven(machine_id, db)
+
+    return Response(success=True, msg=HTTPMessages.OVEN_START_REQUEST, data=[])
+
+
+@router.get("/oven/request_stop/{machine_id}", response_model=Response, tags=["Oven"])
+async def request_stop_oven(
+    machine_id: int,
+    db: Session = Depends(get_db),
+) -> Response:
+    """
+    Requests to stop the oven.
+
+    Args:
+        machine_id (int): The machine identifier.
+        db (Session): The database session.
+
+    Returns:
+        Response: The response containing the oven status.
+    """
+
+    # Send a message to the HMI to stop the oven
+    await WebSocketManager.send_personal_message(
+        "", machine_id, MessageIdentifiers.RequestStopOven
+    )
+
+    # Bypass group for demonstration purposes
+    if (machine_id == GROUP_1_ID):
+        stop_oven(machine_id, db)
+
+    return Response(success=True, msg=HTTPMessages.OVEN_STOP_REQUEST, data=[])
+
 
 @router.get("/oven/start/{machine_id}", response_model=Response, tags=["Oven"])
 async def start_oven(
@@ -64,6 +122,8 @@ async def start_oven(
     Returns:
         Response: The response containing the oven status.
     """
+
+    stop_active_oven_batch(db, machine_id)
 
     # Create oven batch
     new_oven_batch = OvenBatchCreate(
@@ -367,6 +427,9 @@ async def create_log_route(
         "description": created_log.description.value,
         "batch_id": created_log.batch_id,
     }
+
+    if log.type == OvenLogType.PHASE_FINISHED:
+        stop_active_oven_batch(db, machine_id)
 
     await WebSocketManager.send_personal_message(
         created_log_dict, machine_id, MessageIdentifiers.OvenLog
