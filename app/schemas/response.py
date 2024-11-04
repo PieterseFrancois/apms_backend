@@ -82,6 +82,8 @@ class Response(BaseModel):
         list[PressBatchBase],
         list[PressBatch],
         list[PressBatchCreate],
+        bool,
+        list[bool],
         None,
         list[None],
     ]
