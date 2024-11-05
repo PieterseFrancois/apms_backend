@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 
 from app.models import (
     OvenBatch as OvenBatchORM,
@@ -78,17 +79,16 @@ def get_oven_batches_for_machine(
         list[OvenBatchORM] | None: The list of oven batches.
     """
 
-    if limit is None:
-        return (
-            db.query(OvenBatchORM).filter(OvenBatchORM.machine_id == machine_id).all()
-        )
-
-    return (
+    query = (
         db.query(OvenBatchORM)
         .filter(OvenBatchORM.machine_id == machine_id)
-        .limit(limit)
-        .all()
+        .order_by(desc(OvenBatchORM.start_time))
     )
+
+    if limit is not None:
+        query = query.limit(limit)
+
+    return query.all()
 
 
 def get_active_oven_batches(db: Session) -> OvenBatchORM:

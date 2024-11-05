@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 
 from app.models import (
     PressBatch as PressBatchORM,
@@ -73,17 +74,16 @@ def get_press_batches_for_machine(
         list[PressBatchORM] | None: The list of press batches.
     """
 
-    if limit is None:
-        return (
-            db.query(PressBatchORM).filter(PressBatchORM.machine_id == machine_id).all()
-        )
-
-    return (
+    query = (
         db.query(PressBatchORM)
         .filter(PressBatchORM.machine_id == machine_id)
-        .limit(limit)
-        .all()
+        .order_by(desc(PressBatchORM.start_time))
     )
+
+    if limit is not None:
+        query = query.limit(limit)
+
+    return query.all()
 
 
 def get_active_press_batches(db: Session) -> PressBatchORM:
