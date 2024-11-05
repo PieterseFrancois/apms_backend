@@ -150,7 +150,9 @@ def delete_machine_route(
     )
 
 
-@router.get("/machine/{machine_id}/hmi-connected", response_model=Response, tags=["Machines"])
+@router.get(
+    "/machine/{machine_id}/hmi-connected", response_model=Response, tags=["Machines"]
+)
 def check_hmi_connected(
     machine_id: int,
 ) -> Response:
