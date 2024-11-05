@@ -30,7 +30,9 @@ class ConnectionManager:
         )
 
         await self.send_personal_message(
-            f"{client_id} connected to the server", client_id, MessageIdentifiers.MachineConnected
+            f"{client_id} connected to the server",
+            client_id,
+            MessageIdentifiers.MachineConnected,
         )
 
     async def disconnect(self, client_id: str, websocket: WebSocket) -> None:
@@ -52,7 +54,9 @@ class ConnectionManager:
                 del self.active_connections[client_id]
 
         await self.send_personal_message(
-            f"{client_id} disconnected from the server", client_id, MessageIdentifiers.MachineDisconnected
+            f"{client_id} disconnected from the server",
+            client_id,
+            MessageIdentifiers.MachineDisconnected,
         )
 
     async def send_personal_message(
@@ -113,7 +117,7 @@ class ConnectionManager:
         """
 
         # Bypass group for demonstration purposes
-        if (client_id == GROUP_1_ID):
+        if client_id == GROUP_1_ID:
             return True
 
         return str(client_id) in self.active_connections

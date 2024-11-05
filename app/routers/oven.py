@@ -73,7 +73,7 @@ async def request_start_oven(
     )
 
     # Bypass group for demonstration purposes
-    if (machine_id == GROUP_1_ID):
+    if machine_id == GROUP_1_ID:
         await start_oven(machine_id, db)
 
     return Response(success=True, msg=HTTPMessages.OVEN_START_REQUEST, data=[])
@@ -101,7 +101,7 @@ async def request_stop_oven(
     )
 
     # Bypass group for demonstration purposes
-    if (machine_id == GROUP_1_ID):
+    if machine_id == GROUP_1_ID:
         await stop_oven(machine_id, db)
 
     return Response(success=True, msg=HTTPMessages.OVEN_STOP_REQUEST, data=[])

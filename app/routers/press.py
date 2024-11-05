@@ -34,7 +34,9 @@ router = APIRouter()
 GROUP_1_ID: int = 8
 
 
-@router.get("/press/request_start/{machine_id}", response_model=Response, tags=["Press"])
+@router.get(
+    "/press/request_start/{machine_id}", response_model=Response, tags=["Press"]
+)
 async def request_start_press(
     machine_id: int,
     db: Session = Depends(get_db),
@@ -56,10 +58,10 @@ async def request_start_press(
     )
 
     # Bypass group for demonstration purposes
-    if (machine_id == GROUP_1_ID):
+    if machine_id == GROUP_1_ID:
         await start_press(machine_id, db)
 
-    return Response(success=True, msg=HTTPMessages.PRESS_START_REQUEST, data=[]) 
+    return Response(success=True, msg=HTTPMessages.PRESS_START_REQUEST, data=[])
 
 
 @router.get("/press/request_stop/{machine_id}", response_model=Response, tags=["Press"])
@@ -84,7 +86,7 @@ async def request_stop_press(
     )
 
     # Bypass group for demonstration purposes
-    if (machine_id == GROUP_1_ID):
+    if machine_id == GROUP_1_ID:
         await stop_press(machine_id, db)
 
     return Response(success=True, msg=HTTPMessages.PRESS_STOP_REQUEST, data=[])
